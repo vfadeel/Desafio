@@ -105,6 +105,7 @@ angular.module("app")
                 
                 sumValorOriginal();
 
+                $scope.success = "";
                 $scope.isView = true;
                 
                 $("#tituloModal").modal("show");
