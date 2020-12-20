@@ -1,0 +1,1 @@
+var apiEndereco = 'https://localhost:44318/';

@@ -1,0 +1,212 @@
+
+        <header>
+
+            <div class="row p-3">
+                <img src="lib/images/logo.png" class="img mx-auto d-block" />
+            </div>
+
+            <div class="row d-flex justify-content-between">
+
+                <div class="btn">
+                    <button class="btn btn-primary" id="btnAdicionar" ng-click="onNovoTituloClick()">Novo título</button>
+                </div>
+                
+                <div class="form-group search">
+                    <input type="text" id="txtBuscar" ng-model="txtBuscar" class="form-control" style="max-width:450px;" placeholder="Buscar...">
+                </div>
+
+            </div>
+
+        </header>
+      
+        <div class="row">
+
+            <div class="form-group col-12">
+                <div class="alert alert-success" role="alert" ng-if="success">
+                    {{success}}
+                  </div>
+            </div>
+            
+            <div class="form-group col-12">
+                <div class="alert alert-danger" role="alert" ng-if="error">
+                    {{error}}
+                  </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <table class="table table-striped">
+                <thead class="">
+                    <tr>
+                        <th></th>
+                        <th>Número do título</th>
+                        <th>Nome do devedor</th>
+                        <th>Qtde de parcelas</th>
+                        <th>Valor original</th>
+                        <th>Dias em atraso</th>
+                        <th>Valor atualizado na data de hoje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="titulo in titulos |filter: txtBuscar">
+                        <td style="width:32px;">
+                            <img ng-click="onTituloViewClick(titulo)" style="cursor: pointer; width:32px; height:32px;" src="/lib/images/lupa.png">
+                        </td>
+                        <td>{{titulo.Numero}}</td>
+                        <td>{{titulo.DevedorNome}}</td>
+                        <td>{{titulo.QuantidadeParcelas}}</td>
+                        <td>{{titulo.ValorOriginal | number:2}}</td>
+                        <td>{{titulo.DiasEmAtraso}}</td>
+                        <td>{{titulo.ValorAtualizado  | number:2}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="modal fade" id="tituloModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" ng-if="isView">Visualizar título</h5>
+                        <h5 class="modal-title" ng-if="!isView">Adicionar novo título</h5>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+
+                            <div class="form-group col-12">
+                                <div class="alert alert-danger" role="alert" ng-if="errormodal">
+                                    {{errormodal}}
+                                  </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            
+                            <div class="form-group col-6">
+                                <label for="lblTituloNumero">Número</label>
+                                <input type="text" ng-model="titulo.Numero" class="form-control form-control-sm" id="txtTituloNumero"
+                                    placeholder="" mask="999999" ng-disabled="isView">
+                                    <small id="lblTituloNumeroError" class="form-text text-danger">{{tituloNumeroError}}</small>
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label for="lblValorOriginal">Total</label>
+                                <input type="text" class="form-control form-control-sm bg-success" style="color:white;" id="txtValorOriginal"
+                                    placeholder=""  ng-model="valorOriginal" money-mask disabled>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group col-6">
+                                <label for="lblDevedorNome">Devedor</label>
+                                <input type="text" ng-model="titulo.DevedorNome" class="form-control form-control-sm" id="txtDevedorNome"
+                                    placeholder="" ng-disabled="isView">
+                                <small id="lblDevedorNomeError" class="form-text text-danger">{{tituloDevedorNomeError}}</small>
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label for="lblDevedorCpf">CPF</label>
+                                <input type="text" ng-model="titulo.DevedorCpf" class="form-control form-control-sm" id="txtDevedorCpf"
+                                    placeholder="" mask="999.999.999-99" ng-disabled="isView">
+                                    <small id="lblDevedorCpfError" class="form-text text-danger">{{tituloDevedorCpfError}}</small>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group col-6">
+                                <label for="lblJurosPercentual">Juros (%)</label>
+                                <input type="text" ng-model="titulo.JurosPercentual" class="form-control form-control-sm" id="txtJurosPercentual"
+                                    placeholder="" money-mask ng-disabled="isView">
+                                    <small id="lblJurosPercentualError" class="form-text text-danger">{{tituloJurosPercentualError}}</small>
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label for="lblMultaPercentual">Multa (%)</label>
+                                <input type="text" ng-model="titulo.MultaPercentual" class="form-control form-control-sm" id="txtMultaPercentual"
+                                    placeholder="" money-mask ng-disabled="isView">
+                                <small id="lblMultaPercentualError" class="form-text text-danger">{{tituloMultaPercentualError}}</small>
+                            </div>
+
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Parcelas</h5>
+
+                                <div class="row" ng-if="!isView">
+
+                                    <div class="form-group col-6 col-md-3">
+                                        <label for="lblParcelaNumero">Número</label>
+                                        <input type="text" ng-model="parcela.Numero" class="form-control form-control-sm" id="txtParcelaNumero"
+                                            placeholder="" mask="999" ng-disabled="isView">
+                                        <small id="lblErrorParcelaNumero" class="form-text text-danger">{{parcelaNumeroError}}</small>
+                                    </div>
+
+                                    <div class="form-group col-6 col-md-3">
+                                        <label for="lblParcelaVencimento">Vencimento</label>
+                                        <input type="text" ng-model="parcela.DataVencimento" class="form-control form-control-sm" id="txtParcelaDataVencimento"
+                                            placeholder="dd/mm/yyyy" mask="39/19/9999" ng-disabled="isView">
+                                            <small id="lblErrorParcelaDataVencimento" class="form-text text-danger">{{parcelaDataVencimentoError}}</small>
+                                    </div>
+                                    
+                                    <div class="form-group col-6 col-md-3">
+                                        <label for="lblParcelaValor">Valor</label>
+                                        <input type="text" ng-model="parcela.Valor" class="form-control form-control-sm" id="txtParcelaValor"
+                                            placeholder="" money-mask ng-disabled="isView">
+                                            <small id="lblParcelaValorError" class="form-text text-danger">{{lblParcelaValorError}}</small>
+                                    </div>
+
+                                    <div class="form-group col-6 col-md-3">
+                                        <button ng-if="!isView" class="btn btn-primary mt-4" ng-click="onParcelaAdicionarClick(parcela)" >Adicionar</button>
+                                    </div>
+
+
+                            </div>
+                            
+                            <div class="row">
+
+                                <table ng-if="titulo.Parcelas.length > 0" class="table table-striped">
+                                    <thead class="">
+                                        <tr>
+                                            <th></th>
+                                            <th>Número</th>
+                                            <th>Vencimento</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="parcelaGrid in titulo.Parcelas">
+                                            <td style="width:32px;">
+                                                <img ng-click="onDeleteParcela(parcelaGrid)" ng-if="!isView" style="cursor: pointer; width:32px; height:32px;" src="/lib/images/delete.png">
+                                            </td>
+                                            <td>{{parcelaGrid.Numero}}</td>
+                                            <td>{{parcelaGrid.DataVencimento | date: 'dd/MM/yyyy'}}</td>
+                                            <td>{{parcelaGrid.Valor | number:2 }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                    
+                            </div>
+                        </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" ng-if="!isView" class="btn btn-primary" ng-click="onTituloAdicionarClick(titulo)">Salvar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
